@@ -1,0 +1,10 @@
+{
+  "login_info": {
+    "id": "",
+    "key": ""
+  },
+  "subdomains": [
+    "demo.kk9009.com"
+  ],
+  "flush_after_minutes": 10
+}

@@ -1,0 +1,14 @@
+[Unit]
+Description = DNSpod DDNS Service
+After = network.target
+
+[Service]
+Type = simple
+WorkingDirectory = /home/ddns_dnspod_go
+Environment = "TERM=xterm"
+ExecStart = /bin/bash -c "./ddns_dnspod"
+Restart = always
+
+[Install]
+WantedBy = multi-user.target
+Alias = DDNS_DNSPod.service

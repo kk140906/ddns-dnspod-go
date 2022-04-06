@@ -8,6 +8,7 @@ import (
 func NewLogger(file string) *zap.Logger {
 	config := zap.NewProductionConfig()
 	config.Encoding = "console"
+	config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 	config.OutputPaths = []string{"stderr", file}
 	config.ErrorOutputPaths = []string{"stderr", file}
 	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")

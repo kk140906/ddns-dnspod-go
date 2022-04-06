@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/kk140906/ddns-dnspod-go/tencentcloud"
 	"github.com/kk140906/ddns-dnspod-go/utils"
 	"github.com/kk140906/ddns-dnspod-go/zap_wrapper"
@@ -37,7 +38,8 @@ func schedule(minutes int) {
 func updateDnspod() {
 	zap_wrapper.DefaultLogger.Info("prepare update ip")
 	ip := utils.GetIp()
-	if ip == "" {
+	if !utils.ValidIp(ip) {
+		zap_wrapper.DefaultLogger.Error(fmt.Sprintf("ip not valid: %s", ip))
 		return
 	}
 	client := tencentcloud.NewClient()
@@ -62,7 +64,7 @@ func updateDnspod() {
 			}
 			_, err := client.UpdateDomainRecord(k, subdomain, ip, res[subdomain])
 			if err != nil {
-				zap_wrapper.DefaultLogger.Warn("update subdomain ip failed",
+				zap_wrapper.DefaultLogger.Error("update subdomain ip failed",
 					zap.String("subdomain", subdomain),
 					zap.String("domain", k),
 					zap.String("error", err.Error()))

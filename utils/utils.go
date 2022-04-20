@@ -36,6 +36,7 @@ func GetIp() string {
 		zap_wrapper.DefaultLogger.Error("get ip address failed", zap.String("error", err.Error()))
 		return ""
 	}
+	defer (func() { _ = response.Body.Close() })() // close body to prevent socket error:too many open files
 
 	data := make([]byte, 256)
 	pos, err := response.Body.Read(data)
@@ -48,9 +49,11 @@ func GetIp() string {
 }
 
 func httpGetRequest(url string) (*http.Response, error) {
-	transport := &http.Transport{TLSClientConfig: &tls.Config{
-		InsecureSkipVerify: true,
-	}}
+	transport := &http.Transport{
+		DisableKeepAlives: false, // use new client when do a request
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		}}
 	client := &http.Client{Transport: transport}
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,"+
